@@ -4,10 +4,10 @@
 ---
 
 ## 1. Project Overview
-The **Tour & Travel Management System** is a complete, full-stack web application developed as an academic semester mini-project combining three core subjects:
-- **Advanced Web Technology (AWT)**: Asynchronous REST communication via `fetch()`, DOM updates with vanilla JavaScript, and mobile-friendly CSS.
+The **Tour & Travel Management System** is a complete, full-stack web application developed as an academic semester mini-project combining three core computer science subjects:
+- **Advanced Web Technology (AWT)**: Asynchronous REST communication via `fetch()`, dynamic DOM updates with vanilla JavaScript, and mobile-friendly CSS.
 - **Database Management Systems (DBMS)**: MongoDB document schemas, CRUD operations (Create, Read, Update, Delete), and aggregation pipelines (`$group`, `$sum`, `$sort`).
-- **Software Engineering (SE)**: Clean client-server separation, transaction integrity for seat reservations, validation, and modular structure.
+- **Software Engineering (SE)**: Architectural layering, transactional seat integrity, activity workflows, class modeling, and formal test cases.
 
 ---
 
@@ -15,13 +15,13 @@ The **Tour & Travel Management System** is a complete, full-stack web applicatio
 - **Frontend**: HTML5, CSS3, Vanilla JavaScript (ES6) — No React, Next.js, or external UI frameworks.
 - **Backend**: Node.js, Express.js REST API
 - **Database**: MongoDB (`tour_travel_db`), Mongoose ODM
-- **Server Architecture**: Single unified server serving REST APIs and static frontend files directly on `http://localhost:5000`.
+- **Server Architecture**: Unified Express server serving REST APIs and static frontend files directly on `http://localhost:5000`.
 
 ---
 
 ## 3. Project Directory Structure
 ```text
-tour-travel-management/
+Tour-and-Travel/
 │
 ├── frontend/
 │   ├── index.html              # Home Page (Hero, Featured Tours, About)
@@ -56,42 +56,35 @@ tour-travel-management/
 ├── database/
 │   └── sample-data.js          # Database seeder (8+ tours, 3 users, 3 bookings)
 │
+├── docs/
+│   ├── DBMS/
+│   │   ├── database-design.md  # Schema definitions, ER diagram, constraints
+│   │   ├── CRUD.md             # Shell commands & mappings (insertOne, find, updateOne, deleteOne)
+│   │   └── aggregations.md     # Pipelines: Total Revenue ($sum) & Bookings by Tour ($sort)
+│   │
+│   └── SE/
+│       ├── class-diagram.md    # Architecture & Class Diagram (Models, Controllers, UI)
+│       ├── activity-diagram.md # Workflows: Customer Booking & Admin Status Management
+│       └── test-cases.md       # Comprehensive functional & DBMS test cases
+│
 └── README.md                   # Setup, Execution, and Documentation
 ```
 
 ---
 
-## 4. Database Modeling (`tour_travel_db`)
+## 4. Academic Documentation (DBMS & SE)
 
-### Collections:
+Comprehensive academic reports and technical diagrams are organized inside the `docs/` folder:
 
-1. **`users`**
-   - `name` (String, required)
-   - `email` (String, required, lowercase)
-   - `phone` (String, required)
-   - `role` (String, enum: `['customer', 'admin']`)
+### 🗄️ DBMS Documentation (`docs/DBMS/`)
+- [**Database Design & Modeling**](docs/DBMS/database-design.md): Complete schema structures for `users`, `tours`, and `bookings`, Mermaid ER diagram, and seat invariants.
+- [**MongoDB CRUD Operations**](docs/DBMS/CRUD.md): Implementation and Shell demonstration for `insertOne`, `insertMany`, `find`, `findOne`, `updateOne`, and `deleteOne`.
+- [**MongoDB Aggregation Pipelines**](docs/DBMS/aggregations.md): Multi-stage aggregation pipelines for revenue summation (`$group` + `$sum`) and tour popularity ranking (`$group` + `$sum` + `$sort`).
 
-2. **`tours`**
-   - `name` (String, required)
-   - `destination` (String, required)
-   - `description` (String, required)
-   - `duration` (String, required, e.g. "4 Days / 3 Nights")
-   - `price` (Number, required, Indian Rupee ₹)
-   - `availableSeats` (Number, required, non-negative)
-   - `category` (String, enum: `['Adventure', 'Beach', 'Heritage', 'Honeymoon', 'Nature']`)
-   - `image` (String URL)
-
-3. **`bookings`**
-   - `customerName` (String, required)
-   - `email` (String, required)
-   - `phone` (String, required)
-   - `tourId` (ObjectId, ref: `'Tour'`)
-   - `tourName` (String, required)
-   - `numberOfPeople` (Number, min: 1)
-   - `travelDate` (Date, required)
-   - `totalAmount` (Number, `price * numberOfPeople`)
-   - `status` (String, enum: `['Pending', 'Confirmed', 'Cancelled']`)
-   - `createdAt` (Date)
+### 📐 Software Engineering Documentation (`docs/SE/`)
+- [**Class Diagram**](docs/SE/class-diagram.md): Object-oriented class relationships modeling database schemas, route controllers, and client modules.
+- [**Activity Diagrams**](docs/SE/activity-diagram.md): Step-by-step state and activity flows for both the Customer Booking journey and the Admin Tour/Status lifecycle.
+- [**Test Cases Specification**](docs/SE/test-cases.md): 12 verified test cases covering catalog display, live dynamic calculation ($Price \times People$), transactional seat deduction, cancellation refund, and aggregation reports.
 
 ---
 
@@ -112,45 +105,11 @@ tour-travel-management/
 
 ---
 
-## 6. DBMS Operations & Aggregation Examples
-
-### MongoDB CRUD Operations
-- **CREATE**: `db.tours.insertOne({...})` / `Tour.create()`
-- **READ**: `db.tours.find()` / `db.tours.findOne({ _id: ObjectId(...) })`
-- **UPDATE**: `db.tours.updateOne({ _id: ... }, { $set: ... })`
-- **DELETE**: `db.tours.deleteOne({ _id: ... })`
-
-### Aggregation Pipelines (`$group`, `$sum`, `$sort`)
-1. **Total Revenue** across active bookings:
-```javascript
-db.bookings.aggregate([
-  { $match: { status: { $ne: 'Cancelled' } } },
-  { $group: { _id: null, totalRevenue: { $sum: '$totalAmount' } } }
-]);
-```
-
-2. **Bookings by Tour**:
-```javascript
-db.bookings.aggregate([
-  {
-    $group: {
-      _id: '$tourName',
-      bookingCount: { $sum: 1 },
-      totalPeople: { $sum: '$numberOfPeople' },
-      tourRevenue: { $sum: '$totalAmount' }
-    }
-  },
-  { $sort: { bookingCount: -1 } }
-]);
-```
-
----
-
-## 7. How to Run the Project
+## 6. How to Run the Project
 
 ### Prerequisites:
 1. **MongoDB**: Ensure MongoDB service is running on `mongodb://127.0.0.1:27017`
-2. **Node.js**: Installed on your system
+2. **Node.js**: Installed on your system (v16 or higher)
 
 ### Commands:
 
