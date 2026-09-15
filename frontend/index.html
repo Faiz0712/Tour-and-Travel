@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wanderlust - Tour & Travel Management System</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">✈️ Wanderlust Travels</a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="tours.html">Explore Tours</a></li>
+      <li><a href="admin.html" class="admin-nav-btn">Admin Dashboard</a></li>
+    </ul>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-content">
+      <h1>Discover Incredible Holiday Destinations</h1>
+      <p>Handcrafted travel itineraries across India with upfront pricing and instant seat reservation.</p>
+      <a href="tours.html" class="btn btn-primary" style="font-size: 1.05rem; padding: 0.75rem 1.8rem;">Explore Tours</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="section-header">
+      <h2>Popular Destinations</h2>
+      <p>Top holiday packages handpicked for memorable travel</p>
+    </div>
+
+    <!-- 3 Featured tours loaded dynamically via API -->
+    <div id="featuredTours" class="tour-grid">
+      <p style="grid-column: 1/-1; text-align: center;">Loading packages...</p>
+    </div>
+
+    <div style="text-align: center; margin-top: 2rem;">
+      <a href="tours.html" class="btn btn-secondary">View All Tour Packages &rarr;</a>
+    </div>
+
+    <!-- About Section -->
+    <section style="background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius); padding: 2.2rem; margin-top: 3.5rem; text-align: center;">
+      <h3 style="color: var(--secondary); margin-bottom: 0.6rem; font-size: 1.4rem;">Academic Mini-Project Overview</h3>
+      <p style="color: var(--text-muted); max-width: 800px; margin: 0 auto 1.5rem; font-size: 0.95rem;">
+        This Tour & Travel Management System integrates <strong>Advanced Web Technology (AWT)</strong>, <strong>Database Management Systems (DBMS)</strong>, and <strong>Software Engineering (SE)</strong>. It features dynamic REST API endpoints, real-time live price calculation, MongoDB aggregation analytics, and automatic seat inventory deduction.
+      </p>
+      <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+        <div style="background: var(--background); padding: 1rem 1.5rem; border-radius: 8px; border: 1px solid var(--border);">
+          <strong style="color: var(--primary);">REST API Architecture</strong>
+          <p style="font-size: 0.82rem; color: var(--text-muted);">Node.js + Express.js backend</p>
+        </div>
+        <div style="background: var(--background); padding: 1rem 1.5rem; border-radius: 8px; border: 1px solid var(--border);">
+          <strong style="color: var(--primary);">MongoDB Engine</strong>
+          <p style="font-size: 0.82rem; color: var(--text-muted);">$group, $sum, $sort pipelines</p>
+        </div>
+        <div style="background: var(--background); padding: 1rem 1.5rem; border-radius: 8px; border: 1px solid var(--border);">
+          <strong style="color: var(--primary);">Vanilla Frontend</strong>
+          <p style="font-size: 0.82rem; color: var(--text-muted);">Responsive HTML5, CSS3 & ES6 JS</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Tour & Travel Management System | Academic Semester Mini-Project</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

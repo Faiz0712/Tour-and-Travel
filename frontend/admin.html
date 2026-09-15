@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Tour & Travel</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">✈️ Wanderlust Admin</a>
+    <ul class="nav-links">
+      <li><a href="index.html">View Website</a></li>
+      <li><a href="tours.html">Tours Catalog</a></li>
+      <li><a href="admin.html" class="active">Dashboard</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <div class="section-header" style="text-align: left; margin-bottom: 1.8rem;">
+      <h2>Administrator Control Panel</h2>
+      <p>Real-time analytics and management powered by MongoDB aggregation pipelines</p>
+    </div>
+
+    <!-- Stats Cards: Total Tours, Total Bookings, Total Revenue -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <small style="color: var(--text-muted); font-weight: 600;">TOTAL TOURS</small>
+        <div class="stat-val" id="statTours">0</div>
+      </div>
+      <div class="stat-card" style="border-left-color: var(--warning);">
+        <small style="color: var(--text-muted); font-weight: 600;">TOTAL BOOKINGS</small>
+        <div class="stat-val" id="statBookings">0</div>
+      </div>
+      <div class="stat-card" style="border-left-color: var(--success);">
+        <small style="color: var(--text-muted); font-weight: 600;">TOTAL REVENUE ($sum)</small>
+        <div class="stat-val" id="statRevenue">₹0</div>
+      </div>
+    </div>
+
+    <!-- Tour Management -->
+    <div class="admin-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3>Tour Packages Management</h3>
+        <button id="addTourBtn" class="btn btn-primary btn-sm">+ Add New Tour</button>
+      </div>
+      <div style="overflow-x: auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Tour Name</th>
+              <th>Destination</th>
+              <th>Duration</th>
+              <th>Price</th>
+              <th>Available Seats</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="toursTbody">
+            <tr><td colspan="6">Loading tours...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Booking Management -->
+    <div class="admin-card">
+      <h3>Customer Bookings Management</h3>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.5rem;">
+        Updating status Confirmed &rarr; Cancelled automatically restores seats. Cancelled &rarr; Confirmed re-deducts seats.
+      </p>
+      <div style="overflow-x: auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Tour</th>
+              <th>Travel Date</th>
+              <th>People</th>
+              <th>Total Amount</th>
+              <th>Status</th>
+              <th>Change Status</th>
+            </tr>
+          </thead>
+          <tbody id="bookingsTbody">
+            <tr><td colspan="7">Loading customer bookings...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Aggregation Report: Bookings by Tour -->
+    <div class="admin-card">
+      <h3>Aggregation Analytics: Bookings by Tour ($group, $sum, $sort)</h3>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.5rem;">
+        Aggregated in MongoDB by grouping bookings by tourName with sum of bookings and revenue.
+      </p>
+      <div style="overflow-x: auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Tour Name</th>
+              <th>Total Bookings</th>
+              <th>People Booked</th>
+              <th>Revenue Generated</th>
+            </tr>
+          </thead>
+          <tbody id="aggTbody">
+            <tr><td colspan="4">Loading aggregation report...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Add/Edit Tour Modal -->
+  <div class="modal" id="tourModal">
+    <div class="modal-content">
+      <h3 id="modalTitle" style="margin-bottom: 1rem;">Add Tour Package</h3>
+      <form id="tourForm">
+        <input type="hidden" id="editTourId">
+        <div class="form-group">
+          <label>Package Name *</label>
+          <input type="text" id="mName" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>Destination *</label>
+          <input type="text" id="mDest" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>Duration *</label>
+          <input type="text" id="mDuration" class="form-control" placeholder="e.g. 5 Days / 4 Nights" required>
+        </div>
+        <div class="form-group">
+          <label>Price (₹) *</label>
+          <input type="number" id="mPrice" class="form-control" min="0" required>
+        </div>
+        <div class="form-group">
+          <label>Available Seats *</label>
+          <input type="number" id="mSeats" class="form-control" min="0" required>
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select id="mCategory" class="form-control">
+            <option value="Adventure">Adventure</option>
+            <option value="Beach">Beach</option>
+            <option value="Heritage">Heritage</option>
+            <option value="Honeymoon">Honeymoon</option>
+            <option value="Nature">Nature</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="mDesc" class="form-control" rows="2" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Image URL</label>
+          <input type="url" id="mImage" class="form-control" required>
+        </div>
+        <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1.2rem;">
+          <button type="button" id="closeModalBtn" class="btn btn-secondary btn-sm">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Save Package</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Tour & Travel Management System - Admin</p>
+  </footer>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

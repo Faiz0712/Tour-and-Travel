@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Confirmed - Wanderlust</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">✈️ Wanderlust Travels</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tours.html">Explore Tours</a></li>
+      <li><a href="admin.html" class="admin-nav-btn">Admin Dashboard</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <div class="form-card" style="text-align: center; border-top: 5px solid var(--success);">
+      <div style="font-size: 2.8rem; color: var(--success); margin-bottom: 0.5rem;">✓</div>
+      <h2 style="color: var(--secondary); margin-bottom: 0.4rem;">Booking Confirmed!</h2>
+      <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem;">
+        Your reservation has been recorded in the MongoDB database.
+      </p>
+
+      <table class="data-table" style="text-align: left; margin-bottom: 1.5rem;">
+        <tr>
+          <td><strong>Booking ID:</strong></td>
+          <td id="bId">-</td>
+        </tr>
+        <tr>
+          <td><strong>Customer Name:</strong></td>
+          <td id="bName">-</td>
+        </tr>
+        <tr>
+          <td><strong>Tour Package:</strong></td>
+          <td id="bTour">-</td>
+        </tr>
+        <tr>
+          <td><strong>Travelers:</strong></td>
+          <td id="bPeople">-</td>
+        </tr>
+        <tr>
+          <td><strong>Travel Date:</strong></td>
+          <td id="bDate">-</td>
+        </tr>
+        <tr>
+          <td><strong>Total Amount:</strong></td>
+          <td id="bTotal" style="color: var(--primary); font-weight: 700; font-size: 1.15rem;">-</td>
+        </tr>
+        <tr>
+          <td><strong>Booking Status:</strong></td>
+          <td id="bStatus">-</td>
+        </tr>
+      </table>
+
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="tours.html" class="btn btn-secondary">Explore More Tours</a>
+        <button onclick="window.print()" class="btn btn-primary">Print Receipt</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Tour & Travel Management System</p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const id = new URLSearchParams(window.location.search).get('id');
+      if (!id) return;
+      try {
+        const res = await fetch(`/api/bookings/${id}`);
+        const result = await res.json();
+        if (result.success && result.data) {
+          const b = result.data;
+          document.getElementById('bId').textContent = b._id;
+          document.getElementById('bName').textContent = b.customerName;
+          document.getElementById('bTour').textContent = b.tourName;
+          document.getElementById('bPeople').textContent = `${b.numberOfPeople} Person(s)`;
+          document.getElementById('bDate').textContent = new Date(b.travelDate).toLocaleDateString();
+          document.getElementById('bTotal').textContent = `₹${b.totalAmount.toLocaleString('en-IN')}`;
+          document.getElementById('bStatus').innerHTML = `<span class="badge badge-${b.status}">${b.status}</span>`;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  </script>
+</body>
+</html>
