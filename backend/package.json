@@ -8,10 +8,8 @@
     "seed": "node ../database/sample-data.js"
   },
   "dependencies": {
-    "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "express": "^4.19.2",
-    "jsonwebtoken": "^9.0.3",
     "mongoose": "^8.3.1"
   }
 }

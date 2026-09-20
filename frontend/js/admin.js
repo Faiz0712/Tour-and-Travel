@@ -1,12 +1,4 @@
-/**
- * Admin Dashboard Logic
- * Tour & Travel Management System
- */
-
 document.addEventListener('DOMContentLoaded', () => {
-  // Enforce Admin Authentication
-  if (!Auth.requireAdminAuth()) return;
-
   loadAdminDashboard();
   setupModalEvents();
 });
@@ -20,14 +12,7 @@ async function loadAdminDashboard() {
 // 1. Stats and MongoDB Aggregation Report
 async function fetchStats() {
   try {
-    const res = await fetch('/api/dashboard/stats', {
-      headers: Auth.getAuthHeaders()
-    });
-    if (res.status === 401 || res.status === 403) {
-      alert('Admin session expired or access denied.');
-      window.location.href = 'login.html?admin=true';
-      return;
-    }
+    const res = await fetch('/api/dashboard/stats');
     const result = await res.json();
     if (result.success) {
       const { totalTours, totalBookings, totalRevenue, bookingsByTour } = result.data;
@@ -86,14 +71,7 @@ async function fetchTours() {
 async function fetchBookings() {
   const tbody = document.getElementById('bookingsTbody');
   try {
-    const res = await fetch('/api/bookings', {
-      headers: Auth.getAuthHeaders()
-    });
-    if (res.status === 401 || res.status === 403) {
-      alert('Access denied. Administrator privileges required.');
-      window.location.href = 'login.html?admin=true';
-      return;
-    }
+    const res = await fetch('/api/bookings');
     const result = await res.json();
     if (result.success && result.data.length > 0) {
       tbody.innerHTML = result.data.map(b => `
@@ -129,7 +107,7 @@ async function updateBookingStatus(id, status) {
   try {
     const res = await fetch(`/api/bookings/${id}/status`, {
       method: 'PUT',
-      headers: Auth.getAuthHeaders(),
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status })
     });
     const result = await res.json();
@@ -146,10 +124,7 @@ async function updateBookingStatus(id, status) {
 async function deleteTour(id) {
   if (!confirm('Are you sure you want to delete this tour package?')) return;
   try {
-    const res = await fetch(`/api/tours/${id}`, { 
-      method: 'DELETE',
-      headers: Auth.getAuthHeaders()
-    });
+    const res = await fetch(`/api/tours/${id}`, { method: 'DELETE' });
     const result = await res.json();
     if (!result.success) {
       alert(result.message || 'Deletion failed');
@@ -198,7 +173,7 @@ function setupModalEvents() {
     try {
       const res = await fetch(endpoint, {
         method,
-        headers: Auth.getAuthHeaders(),
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
       const result = await res.json();

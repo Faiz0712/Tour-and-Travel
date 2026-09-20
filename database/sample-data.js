@@ -1,15 +1,8 @@
 let mongoose;
-let bcrypt;
 try {
   mongoose = require('mongoose');
 } catch (e) {
   mongoose = require('../backend/node_modules/mongoose');
-}
-
-try {
-  bcrypt = require('bcryptjs');
-} catch (e) {
-  bcrypt = require('../backend/node_modules/bcryptjs');
 }
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/tour_travel_db';
@@ -20,14 +13,13 @@ const Tour = mongoose.model('Tour', new mongoose.Schema({
 }, { timestamps: true }));
 
 const Booking = mongoose.model('Booking', new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   customerName: String, email: String, phone: String, tourId: mongoose.Schema.Types.ObjectId,
   tourName: String, numberOfPeople: Number, travelDate: Date, totalAmount: Number, status: String,
   createdAt: { type: Date, default: Date.now }
 }));
 
 const User = mongoose.model('User', new mongoose.Schema({
-  name: String, email: String, phone: String, password: String, role: String
+  name: String, email: String, phone: String, role: String
 }, { timestamps: true }));
 
 const sampleTours = [
@@ -113,6 +105,12 @@ const sampleTours = [
   }
 ];
 
+const sampleUsers = [
+  { name: "Rahul Sharma", email: "rahul@gmail.com", phone: "9876543210", role: "customer" },
+  { name: "Priya Patel", email: "priya@gmail.com", phone: "9876543211", role: "customer" },
+  { name: "Admin Officer", email: "admin@tourtravel.com", phone: "9876543212", role: "admin" }
+];
+
 async function seed() {
   try {
     console.log(`Connecting to MongoDB at: ${MONGO_URI}`);
@@ -124,50 +122,17 @@ async function seed() {
     await Booking.deleteMany({});
     await User.deleteMany({});
 
-    // Hash passwords
-    const salt = await bcrypt.genSalt(10);
-    const adminHashedPassword = await bcrypt.hash('Admin@123', salt);
-    const userHashedPassword = await bcrypt.hash('User@123', salt);
-
-    const sampleUsers = [
-      { 
-        name: "Rahul Sharma", 
-        email: "rahul@gmail.com", 
-        phone: "9876543210", 
-        password: userHashedPassword, 
-        role: "user" 
-      },
-      { 
-        name: "Priya Patel", 
-        email: "priya@gmail.com", 
-        phone: "9876543211", 
-        password: userHashedPassword, 
-        role: "user" 
-      },
-      { 
-        name: "Admin Officer", 
-        email: "admin@tourtravel.com", 
-        phone: "9876543212", 
-        password: adminHashedPassword, 
-        role: "admin" 
-      }
-    ];
-
-    // Insert Users
-    const users = await User.insertMany(sampleUsers);
-    console.log(`[Seed] Inserted ${users.length} users with hashed credentials.`);
-    console.log('   👤 Admin: admin@tourtravel.com / Admin@123');
-    console.log('   👤 User:  rahul@gmail.com / User@123');
-    console.log('   👤 User:  priya@gmail.com / User@123');
-
     // Insert Tours (8 items)
     const tours = await Tour.insertMany(sampleTours);
     console.log(`[Seed] Inserted ${tours.length} sample tour packages.`);
 
-    // Insert 3 initial bookings linked to users
+    // Insert Users (3 items)
+    await User.insertMany(sampleUsers);
+    console.log(`[Seed] Inserted 3 users.`);
+
+    // Insert 3 initial bookings
     const bookingsData = [
       {
-        userId: users[0]._id,
         customerName: "Rahul Sharma",
         email: "rahul@gmail.com",
         phone: "9876543210",
@@ -179,7 +144,6 @@ async function seed() {
         status: "Confirmed"
       },
       {
-        userId: users[1]._id,
         customerName: "Priya Patel",
         email: "priya@gmail.com",
         phone: "9876543211",
@@ -191,10 +155,9 @@ async function seed() {
         status: "Confirmed"
       },
       {
-        userId: users[0]._id,
-        customerName: "Rahul Sharma",
-        email: "rahul@gmail.com",
-        phone: "9876543210",
+        customerName: "Amit Verma",
+        email: "amit.v@gmail.com",
+        phone: "9876543213",
         tourId: tours[2]._id,
         tourName: tours[2].name,
         numberOfPeople: 2,
