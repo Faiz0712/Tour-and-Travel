@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 const Tour = require('../models/Tour');
 const Booking = require('../models/Booking');
+const { verifyToken, requireAdmin } = require('../middleware/auth');
 
-// GET /api/dashboard/stats
-router.get('/stats', async (req, res) => {
+// GET /api/dashboard/stats (Admin Only)
+router.get('/stats', verifyToken, requireAdmin, async (req, res) => {
   try {
     const totalTours = await Tour.countDocuments();
     const totalBookings = await Booking.countDocuments();

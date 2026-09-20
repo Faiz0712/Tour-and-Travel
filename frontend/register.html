@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Registration - Tour & Travel Management</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Navigation Header -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="index.html" class="logo">🌍 Tour & Travel</a>
+      <nav class="nav-links" id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="tours.html">Tours</a>
+        <a href="login.html" class="nav-btn">Login</a>
+        <a href="register.html" class="nav-btn nav-btn-primary active">Register</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="auth-page">
+    <div class="auth-card">
+      <div class="auth-header">
+        <span class="auth-icon">📝</span>
+        <h2>Create an Account</h2>
+        <p>Join us to book your favorite dream tour packages easily</p>
+      </div>
+
+      <div id="alert-box" class="alert d-none"></div>
+
+      <form id="register-form" novalidate>
+        <div class="form-group">
+          <label for="name">Full Name <span class="required">*</span></label>
+          <input type="text" id="name" name="name" placeholder="e.g. John Doe" required>
+          <div class="error-text" id="error-name"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address <span class="required">*</span></label>
+          <input type="email" id="email" name="email" placeholder="e.g. john@example.com" required>
+          <div class="error-text" id="error-email"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number <span class="required">*</span></label>
+          <input type="tel" id="phone" name="phone" placeholder="e.g. 9876543210" required>
+          <div class="error-text" id="error-phone"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password <span class="required">*</span></label>
+          <input type="password" id="password" name="password" placeholder="At least 6 characters" required>
+          <div class="error-text" id="error-password"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password <span class="required">*</span></label>
+          <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Re-enter your password" required>
+          <div class="error-text" id="error-confirmPassword"></div>
+        </div>
+
+        <button type="submit" id="register-btn" class="btn btn-primary btn-block">
+          Register Account
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        Already have an account? <a href="login.html">Login here</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p>&copy; 2026 Tour & Travel Management System. Academic Mini-Project (AWT • DBMS • SE).</p>
+    </div>
+  </footer>
+
+  <script src="js/auth.js"></script>
+  <script src="js/register.js"></script>
+</body>
+</html>

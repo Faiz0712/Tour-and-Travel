@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Tour = require('../models/Tour');
+const { verifyToken, requireAdmin } = require('../middleware/auth');
 
-// 1. GET ALL TOURS: GET /api/tours
+// 1. GET ALL TOURS: GET /api/tours (Public)
 router.get('/', async (req, res) => {
   try {
     const tours = await Tour.find().sort({ createdAt: -1 });
@@ -12,7 +13,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// 2. GET SINGLE TOUR: GET /api/tours/:id
+// 2. GET SINGLE TOUR: GET /api/tours/:id (Public)
 router.get('/:id', async (req, res) => {
   try {
     const tour = await Tour.findById(req.params.id);
@@ -23,8 +24,8 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// 3. CREATE TOUR: POST /api/tours
-router.post('/', async (req, res) => {
+// 3. CREATE TOUR: POST /api/tours (Admin Only)
+router.post('/', verifyToken, requireAdmin, async (req, res) => {
   try {
     const { name, destination, description, duration, price, availableSeats, category, image } = req.body;
     if (!name || !destination || !price || availableSeats === undefined || availableSeats === null) {
@@ -48,8 +49,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-// 4. UPDATE TOUR: PUT /api/tours/:id
-router.put('/:id', async (req, res) => {
+// 4. UPDATE TOUR: PUT /api/tours/:id (Admin Only)
+router.put('/:id', verifyToken, requireAdmin, async (req, res) => {
   try {
     const updatedTour = await Tour.findByIdAndUpdate(
       req.params.id,
@@ -63,8 +64,8 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// 5. DELETE TOUR: DELETE /api/tours/:id
-router.delete('/:id', async (req, res) => {
+// 5. DELETE TOUR: DELETE /api/tours/:id (Admin Only)
+router.delete('/:id', verifyToken, requireAdmin, async (req, res) => {
   try {
     const deletedTour = await Tour.findByIdAndDelete(req.params.id);
     if (!deletedTour) return res.status(404).json({ success: false, message: 'Tour package not found' });

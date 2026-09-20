@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Dashboard - Tour & Travel Management</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="index.html" class="logo">🌍 Tour & Travel</a>
+      <nav class="nav-links" id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="tours.html">Tours</a>
+        <a href="user-dashboard.html" class="active">My Bookings</a>
+        <button id="nav-logout-btn" class="nav-btn-logout">Logout</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Dashboard Container -->
+  <main class="dashboard-page">
+    <div class="container">
+      <!-- Welcome Banner -->
+      <div class="dashboard-header-card">
+        <div class="user-profile-info">
+          <div class="user-avatar" id="user-avatar">👤</div>
+          <div>
+            <h1 id="user-display-name">Welcome Back!</h1>
+            <p id="user-display-email" class="text-muted">Loading profile...</p>
+            <div class="user-badges">
+              <span class="badge badge-info" id="user-role-badge">Traveler</span>
+              <span class="text-muted" id="user-phone">Phone: -</span>
+            </div>
+          </div>
+        </div>
+        <div class="dashboard-header-actions">
+          <a href="tours.html" class="btn btn-primary">✈️ Book New Tour</a>
+          <button id="logout-btn" class="btn btn-outline-danger">Logout</button>
+        </div>
+      </div>
+
+      <!-- User Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">📑</div>
+          <div class="stat-details">
+            <h3 id="stat-total-bookings">0</h3>
+            <p>Total Bookings</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">✅</div>
+          <div class="stat-details">
+            <h3 id="stat-confirmed-trips">0</h3>
+            <p>Confirmed Trips</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">💰</div>
+          <div class="stat-details">
+            <h3 id="stat-total-spent">₹0</h3>
+            <p>Total Spent</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feedback Alert -->
+      <div id="dashboard-alert" class="alert d-none"></div>
+
+      <!-- My Bookings Table Section -->
+      <section class="dashboard-section card">
+        <div class="section-title-bar">
+          <h2>My Bookings & Reservations</h2>
+          <button id="refresh-bookings-btn" class="btn btn-sm btn-secondary">🔄 Refresh</button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table" id="my-bookings-table">
+            <thead>
+              <tr>
+                <th>Booking ID</th>
+                <th>Tour Name</th>
+                <th>Travel Date</th>
+                <th>People</th>
+                <th>Total Price</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="bookings-tbody">
+              <tr>
+                <td colspan="7" class="text-center py-4">Loading your bookings...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div id="no-bookings-placeholder" class="empty-state d-none">
+          <div class="empty-icon">🎒</div>
+          <h3>No Bookings Yet</h3>
+          <p>You haven't booked any tour packages yet. Choose from our curated domestic and exotic tours!</p>
+          <a href="tours.html" class="btn btn-primary mt-3">Explore Tour Packages</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p>&copy; 2026 Tour & Travel Management System. Academic Mini-Project (AWT • DBMS • SE).</p>
+    </div>
+  </footer>
+
+  <script src="js/auth.js"></script>
+  <script src="js/user-dashboard.js"></script>
+</body>
+</html>

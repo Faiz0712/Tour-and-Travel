@@ -1,3 +1,8 @@
+/**
+ * Booking Page Logic
+ * Tour & Travel Management System
+ */
+
 document.addEventListener('DOMContentLoaded', async () => {
   const tourId = new URLSearchParams(window.location.search).get('tourId');
   if (!tourId) {
@@ -14,6 +19,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   const displayTotal = document.getElementById('displayTotal');
   const availableSeatsInput = document.getElementById('availableSeats');
   const seatsNotice = document.getElementById('seatsNotice');
+
+  // Pre-fill user information if logged in
+  const currentUser = Auth.getUser();
+  if (currentUser) {
+    const nameField = document.getElementById('customerName');
+    const emailField = document.getElementById('email');
+    const phoneField = document.getElementById('phone');
+
+    if (nameField && !nameField.value) nameField.value = currentUser.name || '';
+    if (emailField && !emailField.value) emailField.value = currentUser.email || '';
+    if (phoneField && !phoneField.value && currentUser.phone) phoneField.value = currentUser.phone || '';
+  }
 
   try {
     const res = await fetch(`/api/tours/${tourId}`);
@@ -76,7 +93,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const res = await fetch('/api/bookings', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: Auth.getAuthHeaders(),
         body: JSON.stringify(payload)
       });
       const result = await res.json();

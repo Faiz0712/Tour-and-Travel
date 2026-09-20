@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Tour & Travel Management</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="index.html" class="logo">🌍 Tour & Travel</a>
+      <nav class="nav-links" id="nav-links">
+        <a href="index.html">Home</a>
+        <a href="tours.html">Tours</a>
+        <a href="login.html" class="nav-btn active">Login</a>
+        <a href="register.html" class="nav-btn nav-btn-primary">Register</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Login Page -->
+  <main class="auth-page">
+    <div class="auth-card">
+      <!-- Tabs for User vs Admin Login -->
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab-btn active" id="tab-user-btn">
+          👤 User Login
+        </button>
+        <button type="button" class="auth-tab-btn" id="tab-admin-btn">
+          👑 Admin Login
+        </button>
+      </div>
+
+      <div class="auth-header">
+        <span class="auth-icon" id="login-icon">🔑</span>
+        <h2 id="login-title">Sign In to Your Account</h2>
+        <p id="login-subtitle">Access your bookings and plan your dream journeys</p>
+      </div>
+
+      <div id="alert-box" class="alert d-none"></div>
+
+      <form id="login-form" novalidate>
+        <div class="form-group">
+          <label for="email">Email Address <span class="required">*</span></label>
+          <input type="email" id="email" name="email" placeholder="e.g. user@example.com" required autocomplete="email">
+          <div class="error-text" id="error-email"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password <span class="required">*</span></label>
+          <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
+          <div class="error-text" id="error-password"></div>
+        </div>
+
+        <button type="submit" id="login-btn" class="btn btn-primary btn-block">
+          Sign In
+        </button>
+      </form>
+
+      <!-- Quick Fill Credentials for Lab / Academic Evaluation -->
+      <div class="demo-credentials-box">
+        <div class="demo-header">
+          <span class="demo-badge">Evaluation Quick-Fill</span>
+        </div>
+        <div class="demo-buttons">
+          <button type="button" class="btn-demo" id="fill-user-btn">
+            👤 Fill User (Rahul)
+          </button>
+          <button type="button" class="btn-demo" id="fill-admin-btn">
+            👑 Fill Admin
+          </button>
+        </div>
+        <small class="demo-hint">
+          Admin: <code>admin@tourtravel.com</code> / <code>Admin@123</code>
+        </small>
+      </div>
+
+      <div class="auth-footer" id="auth-footer-text">
+        Don't have an account? <a href="register.html">Register here</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p>&copy; 2026 Tour & Travel Management System. Academic Mini-Project (AWT • DBMS • SE).</p>
+    </div>
+  </footer>
+
+  <script src="js/auth.js"></script>
+  <script src="js/login.js"></script>
+</body>
+</html>

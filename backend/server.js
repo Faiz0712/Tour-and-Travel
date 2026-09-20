@@ -18,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 // API Routes
+app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/tours', require('./routes/tourRoutes'));
 app.use('/api/bookings', require('./routes/bookingRoutes'));
 app.use('/api/dashboard', require('./routes/dashboardRoutes'));
@@ -33,6 +34,7 @@ const server = app.listen(PORT, () => {
   console.log(`🚀 Tour & Travel System Server running on port ${PORT}`);
   console.log(`🌐 Website URL:   http://localhost:${PORT}`);
   console.log(`📊 Admin Panel:   http://localhost:${PORT}/admin.html`);
+  console.log(`👤 User Login:    http://localhost:${PORT}/login.html`);
   console.log('========================================================');
 });
 
