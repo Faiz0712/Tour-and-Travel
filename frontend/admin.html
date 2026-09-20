@@ -13,7 +13,7 @@
 </head>
 <body>
   <nav class="navbar">
-    <a href="index.html" class="nav-brand">✈️ Wanderlust Admin</a>
+    <a href="index.html" class="nav-brand">✈️ Galaxy Travels Admin</a>
     <ul class="nav-links">
       <li><a href="index.html">View Website</a></li>
       <li><a href="tours.html">Tours Catalog</a></li>
@@ -95,28 +95,6 @@
       </div>
     </div>
 
-    <!-- Aggregation Report: Bookings by Tour -->
-    <div class="admin-card">
-      <h3>Aggregation Analytics: Bookings by Tour ($group, $sum, $sort)</h3>
-      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.5rem;">
-        Aggregated in MongoDB by grouping bookings by tourName with sum of bookings and revenue.
-      </p>
-      <div style="overflow-x: auto;">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Tour Name</th>
-              <th>Total Bookings</th>
-              <th>People Booked</th>
-              <th>Revenue Generated</th>
-            </tr>
-          </thead>
-          <tbody id="aggTbody">
-            <tr><td colspan="4">Loading aggregation report...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
   </main>
 
   <!-- Add/Edit Tour Modal -->

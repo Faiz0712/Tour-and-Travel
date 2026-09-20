@@ -33,17 +33,19 @@ async function fetchStats() {
       document.getElementById('statRevenue').textContent = `₹${(totalRevenue || 0).toLocaleString('en-IN')}`;
 
       const aggTbody = document.getElementById('aggTbody');
-      if (bookingsByTour && bookingsByTour.length > 0) {
-        aggTbody.innerHTML = bookingsByTour.map(item => `
-          <tr>
-            <td><strong>${item._id}</strong></td>
-            <td>${item.bookingCount}</td>
-            <td>${item.totalPeople}</td>
-            <td style="color: var(--primary); font-weight: 700;">₹${item.tourRevenue.toLocaleString('en-IN')}</td>
-          </tr>
-        `).join('');
-      } else {
-        aggTbody.innerHTML = '<tr><td colspan="4">No bookings recorded yet.</td></tr>';
+      if (aggTbody) {
+        if (bookingsByTour && bookingsByTour.length > 0) {
+          aggTbody.innerHTML = bookingsByTour.map(item => `
+            <tr>
+              <td><strong>${item._id}</strong></td>
+              <td>${item.bookingCount}</td>
+              <td>${item.totalPeople}</td>
+              <td style="color: var(--primary); font-weight: 700;">₹${item.tourRevenue.toLocaleString('en-IN')}</td>
+            </tr>
+          `).join('');
+        } else {
+          aggTbody.innerHTML = '<tr><td colspan="4">No bookings recorded yet.</td></tr>';
+        }
       }
     }
   } catch (err) {
