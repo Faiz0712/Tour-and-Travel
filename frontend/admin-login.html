@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - Wanderlust Travels</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">✈️ Wanderlust Travels</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tours.html">Explore Tours</a></li>
+    </ul>
+  </nav>
+
+  <main class="container" style="display: flex; align-items: center; justify-content: center; min-height: 70vh;">
+    <div class="form-card" style="width: 100%; max-width: 440px; margin: 0; box-shadow: var(--shadow-lg);">
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🔐</div>
+        <h2 style="color: var(--secondary); margin-bottom: 0.3rem;">Administrator Login</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+          Enter credentials to access the management control panel
+        </p>
+      </div>
+
+      <div id="loginError" style="display: none; background: #fee2e2; color: #b91c1c; padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.9rem; margin-bottom: 1.2rem; border: 1px solid #fecaca; text-align: center; font-weight: 500;">
+        Invalid Admin ID or Password
+      </div>
+
+      <form id="adminLoginForm">
+        <div class="form-group">
+          <label for="adminId">Admin ID</label>
+          <input type="text" id="adminId" class="form-control" placeholder="Enter Admin ID" required autocomplete="username" autofocus>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" class="form-control" placeholder="Enter Password" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" id="loginBtn" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 1rem; margin-top: 0.5rem;">
+          Sign In
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Tour & Travel Management System</p>
+  </footer>
+
+  <script>
+    // Redirect immediately if already authenticated
+    if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+      window.location.href = 'admin.html';
+    }
+
+    const form = document.getElementById('adminLoginForm');
+    const errorDiv = document.getElementById('loginError');
+    const loginBtn = document.getElementById('loginBtn');
+    const adminIdInput = document.getElementById('adminId');
+    const passwordInput = document.getElementById('password');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorDiv.style.display = 'none';
+
+      const adminId = adminIdInput.value.trim();
+      const password = passwordInput.value;
+
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Verifying...';
+
+      try {
+        const res = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ adminId, password })
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          sessionStorage.setItem('adminLoggedIn', 'true');
+          window.location.href = 'admin.html';
+        } else {
+          errorDiv.textContent = data.message || 'Invalid Admin ID or Password';
+          errorDiv.style.display = 'block';
+          passwordInput.value = '';
+          passwordInput.focus();
+          loginBtn.disabled = false;
+          loginBtn.textContent = 'Sign In';
+        }
+      } catch (err) {
+        errorDiv.textContent = 'Network error. Please try again.';
+        errorDiv.style.display = 'block';
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Sign In';
+      }
+    });
+  </script>
+</body>
+</html>

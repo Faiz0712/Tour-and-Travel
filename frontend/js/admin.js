@@ -1,7 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
   loadAdminDashboard();
   setupModalEvents();
+  setupLogout();
 });
+
+function setupLogout() {
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      sessionStorage.removeItem('adminLoggedIn');
+      fetch('/api/admin/logout', { method: 'POST' }).catch(() => {});
+      window.location.href = 'admin-login.html';
+    });
+  }
+}
 
 async function loadAdminDashboard() {
   await fetchStats();

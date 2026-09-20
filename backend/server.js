@@ -18,6 +18,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 // API Routes
+app.post('/api/admin/login', (req, res) => {
+  const { adminId, password } = req.body;
+  if (adminId === 'admin' && password === 'admin@123') {
+    return res.status(200).json({ success: true, message: 'Admin login successful' });
+  } else {
+    return res.status(401).json({ success: false, message: 'Invalid Admin ID or Password' });
+  }
+});
+
+app.post('/api/admin/logout', (req, res) => {
+  return res.status(200).json({ success: true, message: 'Logged out successfully' });
+});
+
 app.use('/api/tours', require('./routes/tourRoutes'));
 app.use('/api/bookings', require('./routes/bookingRoutes'));
 app.use('/api/dashboard', require('./routes/dashboardRoutes'));
