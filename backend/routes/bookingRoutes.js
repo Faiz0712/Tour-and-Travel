@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const Booking = require('../models/Booking');
 const Tour = require('../models/Tour');
+const { verifyUser, optionalUser } = require('../middleware/auth');
 
-// 1. GET ALL BOOKINGS: GET /api/bookings
+// 1. GET ALL BOOKINGS: GET /api/bookings (Admin & System)
 router.get('/', async (req, res) => {
   try {
     const bookings = await Booking.find().sort({ createdAt: -1 });
@@ -13,19 +14,42 @@ router.get('/', async (req, res) => {
   }
 });
 
-// 2. GET SINGLE BOOKING: GET /api/bookings/:id
-router.get('/:id', async (req, res) => {
+// 2. GET LOGGED IN USER'S BOOKINGS: GET /api/bookings/my (User Only)
+router.get('/my', verifyUser, async (req, res) => {
+  try {
+    // Only return bookings that belong to this logged-in user
+    const query = {
+      $or: [
+        { userId: req.user.id },
+        { email: req.user.email.toLowerCase() }
+      ]
+    };
+    const bookings = await Booking.find(query).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, count: bookings.length, data: bookings });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// 3. GET SINGLE BOOKING: GET /api/bookings/:id
+router.get('/:id', optionalUser, async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id);
     if (!booking) return res.status(404).json({ success: false, message: 'Booking not found' });
+
+    // Prevent unauthorized user from viewing another user's booking
+    if (req.user && booking.userId && booking.userId.toString() !== req.user.id) {
+      return res.status(403).json({ success: false, message: 'Access denied. You cannot access another user\'s booking.' });
+    }
+
     res.status(200).json({ success: true, data: booking });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 });
 
-// 3. CREATE BOOKING: POST /api/bookings
-router.post('/', async (req, res) => {
+// 4. CREATE BOOKING: POST /api/bookings
+router.post('/', optionalUser, async (req, res) => {
   try {
     const { customerName, email, phone, tourId, numberOfPeople, travelDate } = req.body;
     if (!customerName || !email || !phone || !tourId || !numberOfPeople || !travelDate) {
@@ -55,17 +79,24 @@ router.post('/', async (req, res) => {
     const totalAmount = tour.price * people;
 
     // Create booking document
-    const newBooking = await Booking.create({
-      customerName,
-      email,
-      phone,
+    const bookingData = {
+      customerName: customerName.trim(),
+      email: email.toLowerCase().trim(),
+      phone: phone.trim(),
       tourId: tour._id,
       tourName: tour.name,
       numberOfPeople: people,
       travelDate: new Date(travelDate),
       totalAmount,
       status: 'Confirmed'
-    });
+    };
+
+    // If a user is logged in, attach their userId
+    if (req.user && req.user.id) {
+      bookingData.userId = req.user.id;
+    }
+
+    const newBooking = await Booking.create(bookingData);
 
     // Reduce available seats
     tour.availableSeats -= people;
@@ -77,7 +108,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-// 4. UPDATE BOOKING STATUS: PUT /api/bookings/:id/status
+// 5. UPDATE BOOKING STATUS: PUT /api/bookings/:id/status
 router.put('/:id/status', async (req, res) => {
   try {
     const { status } = req.body;

@@ -12,6 +12,8 @@
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="tours.html">Explore Tours</a></li>
+      <li><a href="user-login.html">Login</a></li>
+      <li><a href="register.html">Register</a></li>
       <li><a href="admin-login.html" class="admin-nav-btn">Admin Dashboard</a></li>
     </ul>
   </nav>
@@ -57,7 +59,8 @@
 
       <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
         <a href="tours.html" class="btn btn-secondary">Explore More Tours</a>
-        <button onclick="window.print()" class="btn btn-primary">Print Receipt</button>
+        <a href="user-dashboard.html" id="dashboardLinkBtn" class="btn btn-primary" style="display: none;">View in My Bookings</a>
+        <button onclick="window.print()" class="btn btn-secondary">Print Receipt</button>
       </div>
     </div>
   </main>
@@ -66,12 +69,21 @@
     <p>&copy; 2026 Tour & Travel Management System</p>
   </footer>
 
+  <script src="js/user-auth.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
+      if (typeof UserAuth !== 'undefined' && UserAuth.isLoggedIn()) {
+        const dashBtn = document.getElementById('dashboardLinkBtn');
+        if (dashBtn) dashBtn.style.display = 'inline-flex';
+      }
+
       const id = new URLSearchParams(window.location.search).get('id');
       if (!id) return;
+
+      const headers = typeof UserAuth !== 'undefined' ? UserAuth.getAuthHeaders() : {};
+
       try {
-        const res = await fetch(`/api/bookings/${id}`);
+        const res = await fetch(`/api/bookings/${id}`, { headers });
         const result = await res.json();
         if (result.success && result.data) {
           const b = result.data;

@@ -31,6 +31,7 @@ app.post('/api/admin/logout', (req, res) => {
   return res.status(200).json({ success: true, message: 'Logged out successfully' });
 });
 
+app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/tours', require('./routes/tourRoutes'));
 app.use('/api/bookings', require('./routes/bookingRoutes'));
 app.use('/api/dashboard', require('./routes/dashboardRoutes'));

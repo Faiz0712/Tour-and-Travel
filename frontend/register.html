@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Registration - Wanderlust Travels</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">✈️ Wanderlust Travels</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tours.html">Explore Tours</a></li>
+      <li><a href="user-login.html">Login</a></li>
+      <li><a href="register.html" class="active">Register</a></li>
+      <li><a href="admin-login.html" class="admin-nav-btn">Admin Dashboard</a></li>
+    </ul>
+  </nav>
+
+  <main class="container" style="display: flex; align-items: center; justify-content: center; min-height: 75vh; padding: 2rem 1rem;">
+    <div class="form-card" style="width: 100%; max-width: 480px; margin: 0; box-shadow: var(--shadow-lg);">
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📝</div>
+        <h2 style="color: var(--secondary); margin-bottom: 0.3rem;">Create Your Account</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+          Register as a traveler to book and manage holiday tours
+        </p>
+      </div>
+
+      <div id="alertBox" style="display: none; padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.9rem; margin-bottom: 1.2rem; text-align: center; font-weight: 500;"></div>
+
+      <form id="registerForm" novalidate>
+        <div class="form-group">
+          <label for="name">Full Name *</label>
+          <input type="text" id="name" class="form-control" placeholder="e.g. John Doe" required>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address *</label>
+          <input type="email" id="email" class="form-control" placeholder="e.g. john@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number *</label>
+          <input type="tel" id="phone" class="form-control" placeholder="e.g. 9876543210" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password *</label>
+          <input type="password" id="password" class="form-control" placeholder="Minimum 6 characters" required autocomplete="new-password">
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password *</label>
+          <input type="password" id="confirmPassword" class="form-control" placeholder="Re-enter password" required autocomplete="new-password">
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 1rem; margin-top: 0.5rem;">
+          Register
+        </button>
+      </form>
+
+      <p style="text-align: center; margin-top: 1.2rem; font-size: 0.9rem; color: var(--text-muted);">
+        Already registered? <a href="user-login.html" style="color: var(--primary); font-weight: 600;">Sign in here</a>
+      </p>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Tour & Travel Management System</p>
+  </footer>
+
+  <script src="js/user-auth.js"></script>
+  <script>
+    const form = document.getElementById('registerForm');
+    const alertBox = document.getElementById('alertBox');
+    const submitBtn = document.getElementById('submitBtn');
+
+    function showAlert(msg, isSuccess = false) {
+      alertBox.textContent = msg;
+      alertBox.style.display = 'block';
+      if (isSuccess) {
+        alertBox.style.background = '#dcfce7';
+        alertBox.style.color = '#15803d';
+        alertBox.style.border = '1px solid #bbf7d0';
+      } else {
+        alertBox.style.background = '#fee2e2';
+        alertBox.style.color = '#b91c1c';
+        alertBox.style.border = '1px solid #fecaca';
+      }
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      alertBox.style.display = 'none';
+
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      // Field validation
+      if (!name || !email || !phone || !password || !confirmPassword) {
+        showAlert('All fields are required.');
+        return;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        showAlert('Please enter a valid email address.');
+        return;
+      }
+
+      if (password.length < 6) {
+        showAlert('Password must be at least 6 characters long.');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        showAlert('Passwords do not match.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Registering...';
+
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, phone, password, confirmPassword })
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          showAlert('Registration successful! Redirecting to login...', true);
+          form.reset();
+          setTimeout(() => {
+            window.location.href = 'user-login.html?registered=true';
+          }, 1200);
+        } else {
+          showAlert(data.message || 'Registration failed. Please try again.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Register';
+        }
+      } catch (err) {
+        showAlert('Network error. Failed to connect to server.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Register';
+      }
+    });
+  </script>
+</body>
+</html>

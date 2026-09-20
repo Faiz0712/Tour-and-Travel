@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Dashboard - Wanderlust Travels</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/user-auth.js"></script>
+  <script>
+    if (!UserAuth.isLoggedIn()) {
+      window.location.replace('user-login.html');
+    }
+  </script>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">✈️ Wanderlust Travels</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tours.html">Explore Tours</a></li>
+      <li><a href="user-dashboard.html#my-bookings">My Bookings</a></li>
+      <li><a href="user-dashboard.html" class="active">Dashboard</a></li>
+      <li><button id="userLogoutNavBtn" style="background: transparent; border: 1px solid var(--border); padding: 0.35rem 0.75rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">Logout</button></li>
+      <li><a href="admin-login.html" class="admin-nav-btn">Admin Dashboard</a></li>
+    </ul>
+  </nav>
+
+  <main class="container" style="padding: 2.5rem 1.5rem;">
+    <!-- Welcome Profile Card -->
+    <div style="background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius); padding: 1.8rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.2rem; box-shadow: var(--shadow); margin-bottom: 2rem;">
+      <div style="display: flex; align-items: center; gap: 1.2rem;">
+        <div style="width: 55px; height: 55px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), #38bdf8); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 700;" id="userAvatar">
+          👤
+        </div>
+        <div>
+          <h2 style="color: var(--secondary); margin-bottom: 0.2rem;" id="welcomeMsg">Welcome!</h2>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.88rem; color: var(--text-muted);">
+            <span id="userEmailDisplay">📧 Loading email...</span>
+            <span id="userPhoneDisplay">📞 Loading phone...</span>
+            <span style="background: #e0f2fe; color: #0284c7; padding: 0.1rem 0.5rem; border-radius: 4px; font-weight: 600;">Traveler Account</span>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 0.8rem; align-items: center;">
+        <a href="tours.html" class="btn btn-primary btn-sm">✈️ Browse Available Tours</a>
+        <button id="logoutBtn" class="btn btn-secondary btn-sm">Logout</button>
+      </div>
+    </div>
+
+    <!-- My Bookings Section -->
+    <div id="my-bookings" style="background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius); padding: 1.8rem; box-shadow: var(--shadow);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+        <div>
+          <h3 style="color: var(--secondary); margin-bottom: 0.2rem;">My Bookings & Reservations</h3>
+          <p style="color: var(--text-muted); font-size: 0.88rem;">Track your confirmed holiday reservations and travel dates</p>
+        </div>
+        <button id="refreshBtn" class="btn btn-secondary btn-sm">🔄 Refresh</button>
+      </div>
+
+      <div style="overflow-x: auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Booking ID</th>
+              <th>Tour Package</th>
+              <th>Travel Date</th>
+              <th>Travelers</th>
+              <th>Total Amount</th>
+              <th>Status</th>
+              <th>Receipt</th>
+            </tr>
+          </thead>
+          <tbody id="bookingsTbody">
+            <tr>
+              <td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                Loading your bookings...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="emptyBookings" style="display: none; text-align: center; padding: 3rem 1.5rem;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎒</div>
+        <h4 style="color: var(--secondary); margin-bottom: 0.3rem;">No Bookings Found</h4>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.2rem;">
+          You haven't booked any tour packages yet. Choose from our exciting destinations!
+        </p>
+        <a href="tours.html" class="btn btn-primary">Explore & Book Tours</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Tour & Travel Management System</p>
+  </footer>
+
+  <script>
+    const user = UserAuth.getUser();
+    if (user) {
+      document.getElementById('welcomeMsg').textContent = `Welcome, ${user.name}!`;
+      document.getElementById('userEmailDisplay').textContent = `📧 ${user.email}`;
+      if (user.phone) document.getElementById('userPhoneDisplay').textContent = `📞 ${user.phone}`;
+      if (user.name) document.getElementById('userAvatar').textContent = user.name.charAt(0).toUpperCase();
+    }
+
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', () => {
+        UserAuth.logout();
+      });
+    }
+
+    const navLogout = document.getElementById('userLogoutNavBtn');
+    if (navLogout) {
+      navLogout.addEventListener('click', () => {
+        UserAuth.logout();
+      });
+    }
+
+    const tbody = document.getElementById('bookingsTbody');
+    const emptyState = document.getElementById('emptyBookings');
+    const refreshBtn = document.getElementById('refreshBtn');
+
+    async function loadMyBookings() {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-muted);">Loading your bookings...</td></tr>';
+      emptyState.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/bookings/my', {
+          headers: UserAuth.getAuthHeaders()
+        });
+
+        if (res.status === 401) {
+          UserAuth.logout();
+          return;
+        }
+
+        const result = await res.json();
+        if (result.success && result.data && result.data.length > 0) {
+          tbody.innerHTML = result.data.map(b => {
+            const dateStr = b.travelDate ? new Date(b.travelDate).toLocaleDateString('en-IN', {
+              year: 'numeric', month: 'short', day: 'numeric'
+            }) : 'N/A';
+
+            return `
+              <tr>
+                <td><code>#${b._id.slice(-6).toUpperCase()}</code></td>
+                <td><strong>${b.tourName}</strong></td>
+                <td>${dateStr}</td>
+                <td>${b.numberOfPeople} Person(s)</td>
+                <td><strong style="color: var(--primary);">₹${(b.totalAmount || 0).toLocaleString('en-IN')}</strong></td>
+                <td><span class="badge badge-${b.status}">${b.status}</span></td>
+                <td>
+                  <a href="confirmation.html?id=${b._id}" class="btn btn-secondary btn-sm" style="font-size: 0.8rem; padding: 0.25rem 0.6rem;">View Receipt</a>
+                </td>
+              </tr>
+            `;
+          }).join('');
+        } else {
+          tbody.innerHTML = '';
+          emptyState.style.display = 'block';
+        }
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--danger); padding: 2rem;">Failed to load your bookings.</td></tr>';
+      }
+    }
+
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', loadMyBookings);
+    }
+
+    loadMyBookings();
+  </script>
+</body>
+</html>

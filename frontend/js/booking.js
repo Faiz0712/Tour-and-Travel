@@ -15,6 +15,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   const availableSeatsInput = document.getElementById('availableSeats');
   const seatsNotice = document.getElementById('seatsNotice');
 
+  // Pre-fill user data if logged in
+  if (typeof UserAuth !== 'undefined' && UserAuth.isLoggedIn()) {
+    const user = UserAuth.getUser();
+    if (user) {
+      const nameInput = document.getElementById('customerName');
+      const emailInput = document.getElementById('email');
+      const phoneInput = document.getElementById('phone');
+      if (nameInput && !nameInput.value) nameInput.value = user.name || '';
+      if (emailInput && !emailInput.value) emailInput.value = user.email || '';
+      if (phoneInput && !phoneInput.value && user.phone) phoneInput.value = user.phone || '';
+    }
+  }
+
   try {
     const res = await fetch(`/api/tours/${tourId}`);
     const result = await res.json();
@@ -74,9 +87,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       btn.disabled = true;
       btn.textContent = 'Processing Reservation...';
 
+      const headers = typeof UserAuth !== 'undefined' 
+        ? UserAuth.getAuthHeaders() 
+        : { 'Content-Type': 'application/json' };
+
       const res = await fetch('/api/bookings', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify(payload)
       });
       const result = await res.json();
