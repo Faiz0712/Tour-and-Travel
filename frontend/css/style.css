@@ -295,6 +295,13 @@ a {
   color: #991b1b;
 }
 
+.seats-soldout {
+  background: #fee2e2;
+  color: #b91c1c;
+  font-weight: 700;
+  border: 1px solid #fecaca;
+}
+
 /* ================= Forms & Booking ================= */
 .form-card {
   max-width: 580px;

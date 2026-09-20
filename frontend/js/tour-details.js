@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; background: #f8fafc; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid var(--border);">
               <div><small style="color: var(--text-muted);">Duration</small><div style="font-weight: 700; color: var(--secondary);">⏱️ ${tour.duration}</div></div>
               <div><small style="color: var(--text-muted);">Price per person</small><div style="font-size: 1.25rem; color: var(--primary); font-weight: 800;">₹${tour.price.toLocaleString('en-IN')}</div></div>
-              <div><small style="color: var(--text-muted);">Available Seats</small><div><strong style="color: ${isSoldOut ? 'var(--danger)' : 'var(--success)'};">${tour.availableSeats} Seats Remaining</strong></div></div>
+              <div><small style="color: var(--text-muted);">Available Seats</small><div><strong style="color: ${isSoldOut ? 'var(--danger)' : 'var(--success)'};">${isSoldOut ? 'Sold Out (0 Seats Left)' : `${tour.availableSeats} Seats Remaining`}</strong></div></div>
               <div><small style="color: var(--text-muted);">Category</small><div style="font-weight: 600;">${tour.category}</div></div>
             </div>
             ${

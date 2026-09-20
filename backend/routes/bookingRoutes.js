@@ -43,10 +43,12 @@ router.post('/', async (req, res) => {
     }
 
     // Check available seats
-    if (tour.availableSeats < people) {
+    if (tour.availableSeats <= 0 || tour.availableSeats < people) {
       return res.status(400).json({
         success: false,
-        message: `Insufficient seats! Only ${tour.availableSeats} seat(s) remaining.`
+        message: tour.availableSeats <= 0
+          ? 'This tour package is completely sold out!'
+          : `Insufficient seats! Only ${tour.availableSeats} seat(s) remaining.`
       });
     }
 
