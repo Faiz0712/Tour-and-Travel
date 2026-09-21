@@ -111,42 +111,8 @@ db.bookings.aggregate([
 
 ---
 
-## 3. Aggregation Pipeline 3: Booking Status Breakdown
 
-### Objective:
-Count the total reservations in each lifecycle status (`Confirmed`, `Pending`, `Cancelled`).
-
-### Pipeline Stages:
-1. **`$group`**: Groups documents by `$status` and counts the occurrences.
-2. **`$sort`**: Alphabetical ordering of status tags.
-
-### MongoDB Shell Command:
-```javascript
-db.bookings.aggregate([
-  {
-    $group: {
-      _id: "$status",
-      count: { $sum: 1 }
-    }
-  },
-  {
-    $sort: { _id: 1 }
-  }
-]);
-```
-
-### Sample Output:
-```json
-[
-  { "_id": "Cancelled", "count": 1 },
-  { "_id": "Confirmed", "count": 3 },
-  { "_id": "Pending", "count": 1 }
-]
-```
-
----
-
-## 4. Why Use MongoDB Aggregation over Client-Side Computation?
+## 3. Why Use MongoDB Aggregation over Client-Side Computation?
 1. **Database-Level Processing**: Aggregations execute directly inside the MongoDB memory engine, streaming only summary numbers back to Node.js rather than thousands of raw booking documents.
 2. **Reduced Bandwidth & Latency**: Computing `$sum` in the database eliminates network serialization overhead.
 3. **Index-Aware Execution**: The `$match` and `$sort` stages can utilize indexes (such as on `status` or `tourName`), providing $O(\log n)$ efficiency.
